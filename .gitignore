@@ -1,3 +1,4 @@
 # ignore all non-source files
 !*.C
 !*.md
+a.out

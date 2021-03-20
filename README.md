@@ -8,4 +8,4 @@ This is a (slightly convoluted) mandlebrot set generator. The algrithm is implem
 ### To run
 `./mandlebrot`
 
-The default resolution is `24 x 80`, but you can change this as you see fit.
+All the parameters to create the image are found near the top of the `.c` file. 
