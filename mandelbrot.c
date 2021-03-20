@@ -3,32 +3,35 @@
 #include <math.h>
 
 #define Z struct complex_num
-#define MAX_ITR 300
+#define flt float
+#define MAX_ITR 500
 #define X_RES 80
-#define Y_RES 24
+#define Y_RES 31
 #define X_MIN -1.5
-#define X_MAX 1.0
+#define X_MAX 0.5
 #define Y_MIN -1.0
 #define Y_MAX 1.0
 
 struct complex_num
 {
-	float re;
-	float im;
+	/* complex numbers have real and imaginary component */
+	flt re;
+	flt im;
 };
 
 void complex_add(Z * z1, Z * z2, Z * res)
 {
+	/* addition is component-wise */
 	res->re = z1->re + z2->re;
 	res->im = z1->im + z2->im;
 }
 
 void complex_times(Z * z1, Z * z2, Z * res)
 {
-	float a = z1->re;
-	float b = z1->im;
-	float c = z2->re;
-	float d = z2->im;
+	flt a = z1->re;
+	flt b = z1->im;
+	flt c = z2->re;
+	flt d = z2->im;
 	res->re = a*c - b*d;
 	res->im = a*d + b*c;
 }
@@ -51,58 +54,51 @@ void complex_print(Z * z1, int flag)
 	if(flag) printf("\n");
 }
 
-void mandle_iter(Z * z1, Z * c, Z * res)
+void mandel_iter(Z * z1, Z * c, Z * res)
 {
 	complex_pow(z1, 2, res);
 	complex_add(res, c, res);
 }
 
-float mag(Z * z)
+flt mag(Z * z)
 {
 	return sqrtf(z->re * z->re + z->im * z->im);
 }
 
-int main()
+void draw_set(flt x_min, flt x_max, flt x_res, flt y_min, flt y_max, flt y_res, flt max_iter)
 {
-	/* declare pointers */
-	Z * c;
-	Z * z;
+	Z * c = malloc(sizeof(Z));
+	Z * z = malloc(sizeof(Z));
 
-	/* assign memory */
-	c = malloc(sizeof(Z));
-	z = malloc(sizeof(Z));
+	/* loop variables */
+	flt re;
+	flt im;
 
-	float re;
-	float im;
-
-	for(im = Y_MAX; im > Y_MIN; im -= (Y_MAX-Y_MIN)/Y_RES)
+	for(im = y_max; im >= y_min; im -= (y_max-y_min)/(y_res - 1))
 	{
-		for(re = X_MIN; re < X_MAX; re += (X_MAX-X_MIN)/X_RES)
+		for(re = x_min; re <= x_max; re += (x_max-x_min)/(x_res - 1))
 		{
 			z->re = 0.0;
 			z->im = 0.0;
 			c->re = re;
 			c->im = im;
 			int iter = 0;
-			int flag = 1;
-			while(iter < MAX_ITR)
+			while(iter < max_iter && mag(z) < 2)
 			{
-				mandle_iter(z, c, z);
-				if(mag(z) >= 2)
-				{
-					flag = 0;
-					break;
-				}
+				mandel_iter(z, c, z);
 				iter++;
 			}
-			if(flag) printf("#");
-			else printf(" ");
+			(iter == max_iter) ? printf("#") : printf(" ");
 		}
 		printf("\n");
 	}
-
-	/* free memory */
 	free(z);
 	free(c);
+}
+
+int main()
+{
+	draw_set(X_MIN, X_MAX, X_RES, Y_MIN, Y_MAX, Y_RES, MAX_ITR);
+
 	return 0;
 }
