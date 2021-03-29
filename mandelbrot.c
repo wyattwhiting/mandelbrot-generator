@@ -5,8 +5,8 @@
 #define Z struct complex_num
 #define flt float
 #define MAX_ITR 500
-#define X_RES 80
-#define Y_RES 31
+#define X_RES 160
+#define Y_RES 61
 #define X_MIN -1.5
 #define X_MAX 0.5
 #define Y_MIN -1.0
@@ -74,15 +74,22 @@ void draw_set(flt x_min, flt x_max, flt x_res, flt y_min, flt y_max, flt y_res, 
 	flt re;
 	flt im;
 
+	/* loop through imaginary values */
 	for(im = y_max; im >= y_min; im -= (y_max-y_min)/(y_res - 1))
 	{
+		/* loop through real values */
 		for(re = x_min; re <= x_max; re += (x_max-x_min)/(x_res - 1))
 		{
+			/* intiailize c and z */
 			z->re = 0.0;
 			z->im = 0.0;
 			c->re = re;
 			c->im = im;
+
+			/* track iterations */
 			int iter = 0;
+
+			/* loop while number of iterations is below max and magniutde is less than 2 */
 			while(iter < max_iter && mag(z) < 2)
 			{
 				mandel_iter(z, c, z);
