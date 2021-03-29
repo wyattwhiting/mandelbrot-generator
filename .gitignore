@@ -1,4 +1,6 @@
 # ignore all non-source files
-!*.C
+!*.c
 !*.md
 a.out
+./mandelbrot
+
